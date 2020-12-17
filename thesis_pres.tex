@@ -1,0 +1,209 @@
+\documentclass{beamer}
+\usefonttheme[onlymath]{serif}
+\usetheme{metropolis}
+
+%\usepackage[utf8]{inputenc}
+%\usepackage[sfdefault]{roboto}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[outdir=./]{epstopdf}
+
+%\usepackage{multimedia}
+\usepackage{graphicx}
+%\usepackage{minted}
+%\usepackage{transparent}
+%\usepackage{grid-system}
+
+\newcommand{\norm}[1]{\left\| #1 \right\|}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\deriv}[2]{\frac{\mathrm{d} #1}{\mathrm{d} #2}}
+
+\title{A heat equation approach to temperature prediction of decomposing cadavers}
+\author{Leanna Calla}
+\institute{University of Ontario Institute of Technology}
+\date{\today}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+  \frametitle{Outline}
+\tableofcontents
+\end{frame}
+
+\section{Introduction}
+  
+\begin{frame}
+  Upon discovery of a crime scene, a critical piece of physical
+  evidence, especially in an outdoor setting, are the insects involved
+  in natural decomposition.
+  \begin{figure}
+    \includegraphics[width=0.85\textwidth]{Figures/scene2}
+ 
+ \end{figure}
+\end{frame}
+
+\begin{frame}
+   The effects of insect development lasts much longer than
+  chemical changes that occur in the body immediately after death.
+  \begin{figure}
+    \includegraphics[width=\textwidth]{Figures/blowflycycle}
+      \caption{Life cycle of blow fly showing relative time spent in
+      each stage of development.}
+  \end{figure}
+
+\end{frame}
+
+\subsection{Current methods}
+\begin{frame}
+Progression through an insect's life cycle is temperature dependent,
+so thermal summation models are often used.
+\begin{figure}
+ \includegraphics[width=0.8\textwidth]{Figures/anderson}
+  \caption{Development data for Calliphoridae at three different temperature
+profiles as collected in . The ADD range at
+15.8~$^\circ$\textsf{C} (blue), 20.6~$^\circ$\textsf{C} (black), and 23.3~$^\circ$\textsf{C} (red)
+are shown.  }
+%\cite{Anderson2000}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+  To use the thermal summation model historic temperature
+  profiles are required. Current methods use linear regression between
+  the environment and a simulated internal logger.
+  \begin{figure}
+    \includegraphics[width=0.9\textwidth]{Figures/correlation}
+    \caption{Correlation figures for case study data from July and
+      September 2016 decomposition studies performed with swine
+      cadavers at Ontario Tech.}
+  \end{figure}
+\end{frame}
+
+\section{Model Development}
+\subsection{Motivation}
+\begin{frame}
+  Case study data offers internal logger measurements as well as
+  ambient temperature measurement with nearby external loggers.
+  \begin{figure}
+    \includegraphics[width=0.9\textwidth]{Figures/jul1}
+    \caption{Internal temperature probe (red) and environmental
+      temperatures (green) for the first five days of a swine cadaver
+      decomposition study in July 2016}
+
+  \end{figure}
+
+\end{frame}
+\begin{frame}
+  There are some notable patterns between the two temperature profiles
+  \begin{itemize}
+    \item There exists a phase shift between the two curves, especially
+in the first few days;
+\item The phase shift decreases over time;
+\item The internal logger doesn't experience the same lows as
+the ambient temperature, and experiences higher maximums;
+\item Both temperature profiles have a distinct day/night cycle.
+
+  \end{itemize}
+
+\end{frame}
+\subsection{Exploring a Toy model}
+\begin{frame}
+  We explore a heat equation approach. Starting with
+  \begin{equation}\label{eq:heat}
+\rho c_p \pd{T}{t} = k \nabla^2T + Q(\mathbf{x},t).
+\end{equation}
+We consider the model in cylindrical coordinates to
+simulate a three dimensional cylindrical vessel, (\ref{eq:heat}) becomes
+\begin{equation}
+ \rho c_p \pd{T}{t} = k \left( \frac{\partial^2 T}{\partial^2 t} + 
+    \frac{1}{r} \pd{T}{r} + \frac{\partial^2 T}{\partial^2 z}\right) + Q(r,z,t).
+\end{equation}
+\end{frame}
+
+\begin{frame}
+In terms of boundary conditions we desire that the vessel is insulated
+on all sides and the bottom, $S_2, S_3$. The top, $S_1$, may interact
+with the environment. This gives way to
+\begin{align}
+&-k \left.\pd{T}{\hat{n}}\right|_{S_2, S_3} = 0,  &-k \left.\pd{T}{\hat{n}}\right|_{S_1} = h(T - T_{\text{ext}}(t))
+\end{align}
+\end{frame}
+
+\begin{frame}
+  We examine the effects of averaging over the spacial dimensions to
+  obtain an ordinary differential equation which is only time
+  dependent. We rewrite the model where $\bar{\bar{T}}(t) \mapsto
+  \bar{\theta}(\tau)$, 
+  \begin{align}\label{eq:mod}
+    \deriv{\bar{\theta}}{\tau} =-\frac{h\Delta T}{Q_0H}
+    \left(\bar{\theta}-\theta_\text{ext}(\tau)\right)
+    + q(\tau), 
+    \quad\quad \bar{\theta}(0)=0.
+  \end{align}
+\end{frame}
+
+\begin{frame}
+  We run a simulation with a set of parameters to
+  correspond to a bucket of water of depth 30~\textsf{cm} and a
+  significant amount of internal heating. We allow external heating to
+  be sinusoidal. We examine the solution to
+  (\ref{eq:mod}) by solving the ODE numerically and with method of
+  lines.
+  \begin{figure}
+    \includegraphics[width=0.7\textwidth]{Figures/toymodelcomp}
+    \caption{Solution to the ODE with $h=1$ (blue), $h=5$ (red), using
+    method of lines (dashed blue) and the external heating (green).}
+  \end{figure}
+
+\end{frame}
+
+\subsection{Forward Problem}
+
+\begin{frame}
+  We use the toy model to inform the model for a swine cadaver. We
+  allow for heat flux through the boundary,
+  \begin{align}
+\label{eq:model_bc}
+    &- k \left.\pd{T}{\hat{n}}\right|_{\partial \Omega} = h(T-T_0)& 
+    &\mathbf{x} \in \partial \Omega,\ t>0,
+  \end{align}
+  and simplify by averaging at every point so that the average
+  temperature is
+  \begin{equation}
+\label{eq:avg}
+    \bar{T}(t) = \frac{1}{|\Omega|}\int_{\Omega} 
+    T(\mathbf{x}, t)\,\mathrm{d} \mathbf{x}.
+  \end{equation}
+  We nondimensionalize using
+  \begin{align}
+    &\bar{T} = T_{\text{min}} + \Delta T \theta&
+    &T_0 = T_{\text{min}} + \Delta T\theta_0&
+    &t = \tau \tilde{t}.
+\end{align}
+\end{frame}
+
+\begin{frame}
+ The equation for the averaged 
+temperature, as derived analogous to the previous section, becomes
+\begin{align}
+\label{eq:aveode}
+    \deriv{\theta}{t} = 
+    c(t)(\theta_0(t) - \theta) + s(t),
+\end{align}
+with
+\begin{align}
+\label{params}
+    c(t) &= \frac{h|\partial \Omega|\tau}{\rho c_p|\Omega|},&
+    s(t) &= \frac{Q(t)\tau}{\rho c_p\Delta T},&
+    Q(t) &= \frac{1}{|\Omega|}\int_{\Omega}
+    q(\mathbf{x},t)\,\mathrm{d} \mathbf{x},
+\end{align}
+\end{frame}
+
+\section{Parameter Investigation}
+\subsection{Coupling Coefficient}
+
+\subsection{Heat Flux}
+
+\end{document}
