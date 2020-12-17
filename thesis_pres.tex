@@ -202,6 +202,70 @@ with
 \end{frame}
 
 \section{Parameter Investigation}
+\begin{frame}
+  We choose the coupling coefficient to be a constant, $c(t) \mapsto
+  c_0$ and the heat flux, $s(t)$, to be piecewise constant with
+  changes at characteristic times, $\tau_j$, corresponding to sunrise
+  and sunset.
+  \begin{figure}[t]
+    \centering
+% Drawing of the time intervals with c(t) and s(t) dependence
+\setlength{\unitlength}{1cm}
+\begin{picture}(10,2.3)
+\put(0,1){[\hspace{5mm}$I_0$\hspace{5mm})}
+\put(1.6,1){[\hspace{5mm}$I_1$\hspace{5mm})}
+\put(4.1,1){$\ldots$}
+\put(5.5,1){[\hspace{5mm}$I_N$\hspace{5mm})}
+%\put(8,1){$\ldots$}
+%\put(9.5,1){[\hspace{5mm}$I_N$\hspace{5mm})}
+\put(-1,1.7){$s(t)$:}
+\put(0.7,1.7){$s_0$}
+\put(2.3,1.7){$s_1$}
+\put(6.2,1.7){$s_N$}
+%\put(10.2,1.7){$s_N$}
+\put(-1,2.3){$c(t)$:}
+\put(0.7,2.3){$c_0$}
+\put(2.3,2.3){$c_0$}
+\put(6.2,2.3){$c_0$}
+%\put(10,2.3){$c_0$}
+\thicklines
+% Draw the axis
+\put(-1,0.7){\vector(1,0){10}}
+% Tickmarks
+\put(0.08,0.6){\line(0,1){0.2}}
+\put(1.7,0.6){\line(0,1){0.2}}
+\put(3.3,0.6){\line(0,1){0.2}}
+\put(5.57,0.6){\line(0,1){0.2}}
+\put(7.1,0.6){\line(0,1){0.2}}
+%\put(9.57,0.6){\line(0,1){0.2}}
+%\put(11.3,0.6){\line(0,1){0.2}}
+% Extended dashed lines to bind the 
+% c/s to the number line
+{\color{gray}
+\multiput(0.08,1.5)(0,0.2){7}{\line(0,1){0.1}}
+\multiput(1.7,1.5)(0,0.2){7}{\line(0,1){0.1}}
+\multiput(3.3,1.5)(0,0.2){7}{\line(0,1){0.1}}
+\multiput(5.57,1.5)(0,0.2){7}{\line(0,1){0.1}}
+\multiput(7.1,1.5)(0,0.2){7}{\line(0,1){0.1}}
+%\multiput(9.57,1.5)(0,0.2){7}{\line(0,1){0.1}}
+%\multiput(11.3,1.5)(0,0.2){7}{\line(0,1){0.1}}
+}
+% Labels
+\put(0,0.3){$\tau_0$}
+\put(1.6,0.3){$\tau_1$}
+\put(3.2,0.3){$\tau_2$}
+\put(5.5,0.3){$\tau_N$}
+\put(7.0,0.3){$\tau_{N+1}$}
+%\put(9.5,0.3){$\tau_N$}
+%\put(11.2,0.3){$\tau_{N+1}$}
+% Location of t
+\put(6.25,0.3){$t$}
+\end{picture}
+\caption{The structure of $c(t)$ and $s(t)$.}
+    \label{fig:c_and_s_structure}
+\end{figure}
+
+\end{frame}
 \subsection{Coupling Coefficient}
 
 \subsection{Heat Flux}
