@@ -17,6 +17,7 @@
 \newcommand{\norm}[1]{\left\| #1 \right\|}
 \newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\deriv}[2]{\frac{\mathrm{d} #1}{\mathrm{d} #2}}
+\newcommand{\diff}{\mathrm{d}}
 
 \title{A heat equation approach to temperature prediction of decomposing cadavers}
 \author{Leanna Calla}
@@ -264,10 +265,114 @@ with
 \caption{The structure of $c(t)$ and $s(t)$.}
     \label{fig:c_and_s_structure}
 \end{figure}
+\end{frame}
+
+\begin{frame}
+  Upon rewriting the solution of (\ref{eq:aveode}) as $\theta = u +
+  v$, to represent two heat sources we obtain a solution in the
+  following form
+  \begin{align}
+\label{mywholemodel}
+    \theta(t;c_0,\mathbf{s}) &= \theta(t_0)
+    \textrm{e}^{-c_0(t-\tau_0)} + 
+    c_0\int_{\tau_0}^t \textrm{e}^{-c_0(t-\eta)} 
+    \theta_0(\eta)\, \diff \eta \\
+    & \quad 
+    + \frac{1}{c_0}\sum_{j=0}^{l-1}s_j
+    \left(\textrm{e}^{-c_0(t-\tau_{j+1})}
+    -\textrm{e}^{-c_0(t-\tau_j)}\right)
+    + \frac{s_l}{c_0} \left(
+    1-\textrm{e}^{-c_0(t-\tau_l)}\right),
+\end{align}
+for $\tau_l\le t<\tau_{l+1}$, and $l = 0, 1, \ldots, N$.
+\end{frame}
+
+\begin{frame}
+With the model representation now having one values for $c_0$ and
+$N+1$ values for $s$, we are able to use ground truth values to
+perform a one parameter optimization. Ground truth measured internal temperatures, $\hat{\theta}$ are used to
+give the objective function 
+\begin{align}
+\label{eq:min-f}
+    f = \|\hat{\theta} - \theta\|^2_{\ell^2(\mathbb{R}^M)}.
+\end{align}
+\end{frame}
+
+\begin{frame}
+
+Or using a matrix approach 
+\begin{align}
+\label{eq:thetavec}
+    \theta = \mathbf{u}(c_0) + B(c_0) \mathbf{s}
+\end{align}
+ where $\mathbf{u}(c_0) = (u(t_1;c_0),\ldots,u(t_M;c_0))^{\textsf{T}}$, and
+ \begin{align}
+ \label{bdefn}
+     [B(c_0)]_{ij} = \frac{1}{c_0}\begin{cases}
+     \textrm{e}^{-c_0(t_i-\tau_j)}-\textrm{e}^{-c_0(t_i-\tau_{j-1})}, &
+     1 \le j \le l,\\
+     1-\textrm{e}^{-c_0(t_i-\tau_l)}, & j = l+1,\\
+     0, & l+2 \le j \le N+1.
+     \end{cases}
+ \end{align} 
+\end{frame}
+
+\section{Optimal Parameters}
+\subsection{Coupling Coefficient}
+\begin{frame}
+Analysis of the coupling coefficient is performed by examining the
+percent relative error
+\begin{align}
+\label{myrelerror}
+    \textrm{Percent relative error} = 
+    \frac{100}{\|\hat{\theta}\|_{\ell^2(\mathbb{R}^M)}}
+    \left\|\left(\mathbf{I}- B(B^{\textsf{T}}B)^{-1}B^{\textsf{T}}\right)
+    (\mathbf{u}-\hat{\theta})\right\|_{\ell^2(\mathbb{R}^M)}.
+\end{align}
+
+\begin{figure}
+\includegraphics[width=0.8\textwidth]{Figures/sept_jul_err_n}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+We also examine how the error and values of the coupling coefficient
+changes as a function of time.
+\begin{figure}
+\includegraphics[width=0.49\textwidth]{Figures/jul_c_bounds}
+\includegraphics[width=0.49\textwidth]{Figures/sept_c_bounds2}
+\caption{Left: July data set. Right:September data set. Upper and
+  lower 1\% errors shown in dashed blue.}
+\end{figure}
 
 \end{frame}
-\subsection{Coupling Coefficient}
 
 \subsection{Heat Flux}
+\begin{frame}
+After finding the optimal choice of coupling coefficient we are able
+to extract the optimal piecewise constant heat flux signature.
+\begin{figure}
+  \includegraphics[width=0.49\textwidth]{Figures/jul_s}
+  \includegraphics[width=0.49\textwidth]{Figures/sept_s_part}
+  \caption{Left: July data set. Right:September data set. Hours past
+    beginning of experiment plotted as the independent axis. Vertical
+    lines indicate progression through observed stages of decomposition.}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+  We also examine the heat flux signature as it depends on the ADD.
+  \begin{figure}
+\includegraphics[width=0.49\textwidth]{Figures/jul_addex}
+\includegraphics[width=0.49\textwidth]{Figures/sept_addex}
+\caption{A scaling of the flux $\mathbf{s}^*$ with the 
+abscissa expressed in ADD calculated using the external 
+ambient temperature.}
+\label{fig:s-fun-ADD}
+\end{figure}
+\end{frame}
+
+\section{Temperature Prediction}
+
 
 \end{document}
