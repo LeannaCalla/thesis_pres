@@ -22,7 +22,7 @@
 \title{A heat equation approach to temperature prediction of decomposing cadavers}
 \author{Leanna Calla}
 \institute{University of Ontario Institute of Technology}
-\date{\today}
+\date{January 8th, 2021}
 
 \begin{document}
 \frame{\titlepage}
@@ -288,9 +288,10 @@ for $\tau_l\le t<\tau_{l+1}$, and $l = 0, 1, \ldots, N$.
 \end{frame}
 
 \begin{frame}
-With the model representation now having one values for $c_0$ and
+  \frametitle{Objective Function}
+With the model representation now having one value for $c_0$ and
 $N+1$ values for $s$, we are able to use ground truth values to
-perform a one parameter optimization. Ground truth measured internal temperatures, $\hat{\theta}$ are used to
+perform a one parameter optimization. Measured internal temperatures, $\hat{\theta}$ are used to
 give the objective function 
 \begin{align}
 \label{eq:min-f}
@@ -331,13 +332,17 @@ percent relative error
 \end{align}
 
 \begin{figure}
-\includegraphics[width=0.8\textwidth]{Figures/sept_jul_err_n}
+  \includegraphics[width=0.75\textwidth]{Figures/sept_jul_err_n}
+  \caption{The relative error as a function of $c_0$ for 
+the duration of each decomposition study for the July 
+($c_0^*\simeq 0.51$) and the September ($c_0^*\simeq 0.29$) 
+experiments.}
 \end{figure}
 \end{frame}
 
 \begin{frame}
-We also examine how the error and values of the coupling coefficient
-changes as a function of time.
+We also examine how the error and the coupling coefficient
+change as a function of time.
 \begin{figure}
 \includegraphics[width=0.49\textwidth]{Figures/jul_c_bounds}
 \includegraphics[width=0.49\textwidth]{Figures/sept_c_bounds2}
@@ -349,18 +354,20 @@ changes as a function of time.
 
 \subsection{Heat Flux}
 \begin{frame}
+  \frametitle{Heat flux vs time}
 After finding the optimal choice of coupling coefficient we are able
 to extract the optimal piecewise constant heat flux signature.
 \begin{figure}
   \includegraphics[width=0.49\textwidth]{Figures/jul_s}
   \includegraphics[width=0.49\textwidth]{Figures/sept_s_part}
-  \caption{Left: July data set. Right:September data set. Hours past
+  \caption{Left: July data set. Right: September data set.defined by Hours past
     beginning of experiment plotted as the independent axis. Vertical
     lines indicate progression through observed stages of decomposition.}
 \end{figure}
 \end{frame}
 
 \begin{frame}
+  \frametitle{Heat flux vs ADD}
   We also examine the heat flux signature as it depends on the ADD.
   \begin{figure}
 \includegraphics[width=0.49\textwidth]{Figures/jul_addex}
@@ -373,6 +380,113 @@ ambient temperature.}
 \end{frame}
 
 \section{Temperature Prediction}
+\begin{frame}
+  \frametitle{Choice of coupling coefficient}
+  A new swine cadaver decomposition study was performed at Ontario
+  Tech in September 2019. We use the September 2016 data to inform the
+  choice of parameters. We choose $c_0 = 0.29$.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Choice of heat flux signature}
+  We allow the heat flux signature to be a time dependant function
+  with constant background value, and a parabolic arc which
+  encapsulates the increased heat flux as the body progresses through
+  decomposition. The function is,
+  \begin{equation}\label{eq:flux_function}
+    s(t; s_0, s_\infty) = s_\infty + 
+    \frac{4(s_0-s_\infty)}{(b-a)^2}(t-a)(b-t)\chi_{[a,b]}(t),
+\end{equation}
+  where $a$ and $b$ are chosen as times that correspond to an ADD of
+  50 and 220 respectively\footnote{These choices of ADD values
+    span the majority of insect activity through active decay.}.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Choice of background and peak}
+  The peak is chosen so that the maximum temperature in bounded below
+  $45^\circ$C. We require
+  \begin{equation}
+    s_0^* = \arg\left\{\max_{s_0} \theta\left(t; c_0, s\left(
+    t;s_0, s_\infty\right)\right) = \theta_{\max}\right\}
+\end{equation}
+where $\theta_{\max} = 45$.
+
+  The background flux is informed by the behaviour at the
+  tail end of the 2016 studies.
+  \begin{figure}
+\includegraphics[width=0.65\textwidth]{Figures/flux_tail}
+\label{fig:s-fun-ADD}
+\end{figure}
+\end{frame}
+
+\section{Results}
+\begin{frame}
+We compare our model against the linear regression model that is built
+using the last 7 days of the internal pig logger and the ambient
+logger on the fence,
+
+\begin{equation}
+\label{eq:2019-lr}
+    \theta_{\text{reg}} = 0.6510 \theta_0 + 6.7724.
+  \end{equation}
+  Based on analysis from 2016 sets, our choice of parameters are $c_0
+  = 0.29$, $s_\infty = 0.75$ and $s_0 = 5.9$. The resulting relative
+  error is $19.11\%$ for our model and $33.54\%$ for linear regression.  
+\end{frame}
+
+\begin{frame}
+  \begin{figure}
+    \includegraphics[width=\textwidth]{Figures/full-pred}
+    \caption{The temperature profiles for the full pig 1 data set
+      commencing at 09/09/2019 12:00:00 GMT-4 (917 hours). Internal
+      cadaver temperature (red), en-vironment (green), predicted
+      cadaver (blue) and linear regression prediction (dahsed blue)}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Permutations of parameters}
+We examine the effects of changing the parameters on the relative
+error.
+\begin{table}
+\centering
+\caption{The effects of changing model parameters on 
+the percent relative error.  The nominal values are $c_0=0.29$,
+$s_\infty=0.75$, and $s_0=5.9$.}
+\vspace{2mm}
+\label{tab:param-invest}
+\begin{tabular}{ll|ll|ll}
+\multicolumn{1}{c}{$c_0$} & \% error &
+\multicolumn{1}{c}{$s_\infty$} & \% error &
+\multicolumn{1}{c}{$s_0$} & \% error \\
+\hline\hline 0.2 & 28.61\% & 0.5 & 20.23\% & 4 & 18.14\% \\
+0.3 & 18.84\% & 1 & 18.48\% & 5 & 17.80\% \\
+0.4 & 19.59\% & 2 & 22.42 \% & 7 & 22.29\%
+\end{tabular}
+\end{table}
+\end{frame}
+
+\section{Future Work}
+\begin{frame}
+Further steps can be taken to improve the model's reliability such as
+\begin{itemize}
+\item Test against more data sets to improve parameter prediction
+\item Test against studies in different locations and times of the
+  year
+  \item Examine the effects of the surrounding environment (shade, wind,
+    tree canopy) on the coupling coefficient
+\item Find ways to choose start day when information is not available
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Acknowledgements}
+Thank you for Sean for all your guidance and help in modelling. \\
+
+Thank you to Helene for sharing your wealth of knowledge.
+
+\end{frame}
 
 
 \end{document}
